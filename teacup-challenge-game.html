@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfect Pour - Tea Cup Challenge</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f0e6;
+      flex-direction: column;
+    }
+    #game-container {
+      text-align: center;
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+    }
+    #teacup {
+      width: 200px;
+      height: 150px;
+      border: 3px solid #8b4513;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      margin: 0 auto;
+      position: relative;
+      background-color: white;
+      overflow: hidden;
+    }
+    #handle {
+      width: 40px;
+      height: 70px;
+      border: 3px solid #8b4513;
+      border-left: none;
+      border-radius: 0 50px 50px 0;
+      position: absolute;
+      top: 40px;
+      right: -40px;
+    }
+    #water {
+      width: 100%;
+      background-color: #c2e6ff;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      transition: height 0.3s;
+    }
+    #target-line {
+      width: 100%;
+      height: 2px;
+      background-color: #ff6b6b;
+      position: absolute;
+      top: 10px;
+      left: 0;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #hot-water {
+      background-color: #ff6b6b;
+      color: white;
+    }
+    #ice-cube {
+      background-color: #63a4ff;
+      color: white;
+    }
+    #dump {
+      background-color: #333;
+      color: white;
+    }
+    #stats {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    #message {
+      margin-top: 10px;
+      font-size: 18px;
+      min-height: 24px;
+      color: #333;
+    }
+    #victory-banner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 10;
+    }
+    #restart-button {
+      background-color: #4CAF50;
+      color: white;
+      margin-top: 10px;
+    }
+    #keyboard-controls {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+    .steam {
+      position: absolute;
+      width: 10px;
+      height: 0;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <h1>Perfect Pour</h1>
+    <p>Fill the cup exactly to the red line!</p>
+    
+    <div id="teacup">
+      <div id="water"></div>
+      <div id="target-line"></div>
+      <div id="handle"></div>
+    </div>
+    
+    <div class="controls">
+      <button id="hot-water">Add Hot Water</button>
+      <button id="ice-cube">Add Ice Cube</button>
+      <button id="dump">Dump Out</button>
+    </div>
+    
+    <div id="stats">
+      <div>Fill Level: <span id="fill-percentage">0</span>%</div>
+      <div>Target: 100%</div>
+      <div>Attempts: <span id="attempts">0</span></div>
+    </div>
+    
+    <div id="message"></div>
+    
+    <div id="keyboard-controls">
+      Keyboard: [H] Hot Water, [I] Ice Cube, [D] Dump Out, [R] Restart
+    </div>
+    
+    <div id="victory-banner">
+      <h2>Perfect Pour!</h2>
+      <p>You've achieved the impossible! <span id="win-attempts">0</span> attempts.</p>
+      <button id="restart-button">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    // Game elements
+    const teacup = document.getElementById('teacup');
+    const water = document.getElementById('water');
+    const fillPercentage = document.getElementById('fill-percentage');
+    const attemptsElement = document.getElementById('attempts');
+    const messageElement = document.getElementById('message');
+    const victoryBanner = document.getElementById('victory-banner');
+    const winAttemptsElement = document.getElementById('win-attempts');
+    const restartButton = document.getElementById('restart-button');
+
+    // Game state
+    let fillLevel = 0; // Percentage
+    let attempts = 0;
+    let gameActive = true;
+    const perfectLevel = 100; // The target fill percentage
+    const tolerance = 0.5; // How close you need to be to win (±0.5%)
+
+    // Hot water adds between 5-15% randomly
+    // Ice cube melts and adds 2-5% randomly
+    // Each has a chance to overflow!
+
+    // Initialize
+    updateWaterLevel();
+    updateAttempts();
+
+    // Event listeners
+    document.getElementById('hot-water').addEventListener('click', addHotWater);
+    document.getElementById('ice-cube').addEventListener('click', addIceCube);
+    document.getElementById('dump').addEventListener('click', dumpWater);
+    restartButton.addEventListener('click', restartGame);
+
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+      if (!gameActive) return;
+      
+      switch(e.key.toLowerCase()) {
+        case 'h': addHotWater(); break;
+        case 'i': addIceCube(); break;
+        case 'd': dumpWater(); break;
+        case 'r': restartGame(); break;
+      }
+    });
+
+    function addHotWater() {
+      if (!gameActive) return;
+      
+      updateAttempts(attempts + 1);
+      
+      // Add between 5-15% randomly
+      const amount = Math.random() * 10 + 5;
+      fillLevel += amount;
+      
+      // Show steam animation
+      createSteam();
+      
+      checkGameState();
+      updateWaterLevel();
+      showMessage(`Added hot water (+${amount.toFixed(1)}%)`);
+    }
+
+    function addIceCube() {
+      if (!gameActive) return;
+      
+      updateAttempts(attempts + 1);
+      
+      // Add between 2-5% randomly
+      const amount = Math.random() * 3 + 2;
+      fillLevel += amount;
+      
+      checkGameState();
+      updateWaterLevel();
+      showMessage(`Added ice cube (+${amount.toFixed(1)}%)`);
+    }
+
+    function dumpWater() {
+      if (!gameActive) return;
+      
+      updateAttempts(attempts + 1);
+      
+      // Remove between 20-60% randomly
+      const amount = Math.random() * 40 + 20;
+      fillLevel = Math.max(0, fillLevel - amount);
+      
+      checkGameState();
+      updateWaterLevel();
+      showMessage(`Dumped water (-${amount.toFixed(1)}%)`);
+    }
+
+    function checkGameState() {
+      // Check for overflow
+      if (fillLevel > 120) {
+        gameActive = false;
+        showMessage("Oh no! The cup overflowed! Game over.");
+        setTimeout(restartGame, 2000);
+        return;
+      }
+      
+      // Check for perfect fill
+      if (Math.abs(fillLevel - perfectLevel) <= tolerance) {
+        gameActive = false;
+        showMessage("Perfect pour! You win!");
+        victoryBanner.style.display = 'block';
+        winAttemptsElement.textContent = attempts;
+      }
+    }
+
+    function updateWaterLevel() {
+      // The height of the water element, maximum is 140px (the cup height - 10px)
+      const height = Math.min(140, fillLevel / 120 * 140);
+      water.style.height = `${height}px`;
+      
+      // Update displayed percentage
+      fillPercentage.textContent = fillLevel.toFixed(1);
+      
+      // Change water color based on level
+      if (fillLevel > 100) {
+        water.style.backgroundColor = '#ff9999'; // Slightly red tint when overfilled
+      } else {
+        water.style.backgroundColor = '#c2e6ff';
+      }
+    }
+
+    function updateAttempts(newAttempts) {
+      if (newAttempts !== undefined) {
+        attempts = newAttempts;
+      }
+      attemptsElement.textContent = attempts;
+    }
+
+    function showMessage(text) {
+      messageElement.textContent = text;
+    }
+
+    function restartGame() {
+      fillLevel = 0;
+      gameActive = true;
+      updateWaterLevel();
+      showMessage("");
+      victoryBanner.style.display = 'none';
+    }
+
+    function createSteam() {
+      for (let i = 0; i < 3; i++) {
+        const steam = document.createElement('div');
+        steam.className = 'steam';
+        steam.style.left = `${Math.random() * 160 + 20}px`;
+        steam.style.top = '0px';
+        steam.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+        teacup.appendChild(steam);
+        
+        // Animate steam rising
+        setTimeout(() => {
+          steam.style.height = '30px';
+          steam.style.opacity = '0.7';
+          steam.style.transition = 'height 1s, opacity 2s, top 2s';
+          steam.style.top = '-30px';
+          
+          // Remove after animation
+          setTimeout(() => {
+            steam.remove();
+          }, 2000);
+        }, i * 200);
+      }
+    }
+  </script>
+</body>
+</html>
