@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synergy Ventures | W&L Business Team</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --primary: #00205B;
+            --secondary: #990000;
+            --accent: #FFD700;
+            --light: #F4F4F4;
+            --dark: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(0, 32, 91, 0.9), rgba(0, 32, 91, 0.7)), url('/api/placeholder/1200/600') center/cover;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: var(--dark);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .section {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary);
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--dark);
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .team-member {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+        
+        .member-img {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .member-info {
+            padding: 1.5rem;
+        }
+        
+        .member-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .member-role {
+            color: var(--secondary);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .member-bio {
+            margin-bottom: 1rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 0.8rem;
+        }
+        
+        .social-links a {
+            color: var(--dark);
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+        }
+        
+        .mission {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .mission-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+        
+        .mission-text {
+            flex: 1;
+        }
+        
+        .mission-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .mission-img {
+            flex: 1;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+        }
+        
+        .stats {
+            background-color: var(--light);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .stat-item {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-title {
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        .contact {
+            background-color: var(--dark);
+            color: white;
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+        
+        .contact-info h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .contact-details {
+            margin-bottom: 2rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-item i {
+            margin-right: 1rem;
+            color: var(--accent);
+        }
+        
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            border: none;
+        }
+        
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        .contact-form .btn {
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        footer {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        footer p {
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links li {
+            margin: 0 1rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .mission-content {
+                flex-direction: column;
+            }
+            
+            .mission-img {
+                width: 100%;
+            }
+        }
+        
+        /* Add animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animated {
+            animation: fadeIn 1s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">THE<span>FRANCLUB</span></div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#mission">Mission</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <h1 class="animated">The Franclub at Washington & Lee</h1>
+        <p class="animated">Bringing together diverse talents and perspectives to create innovative solutions</p>
+        <a href="#team" class="btn animated">Meet Our Team</a>
+    </section>
+
+    <section id="team" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Team</h2>
+                <p>A collective of brilliant minds from Washington and Lee University, united by our drive to succeed and appreciation for niche interests.</p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-member animated">
+                    <div class="member-img" style="background-image: url('/api/placeholder/300/300')"></div>
+                    <div class="member-info">
+                        <h3 class="member-name">Jaz Walker</h3>
+                        <p class="member-role">Political Science Major</p>
+                        <p class="member-bio">Brings strategic vision and policy insights to our venture. Specializes in analyzing market regulations and developing effective networking strategies.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member animated">
+                    <div class="member-img" style="background-image: url('/api/placeholder/300/300')"></div>
+                    <div class="member-info">
+                        <h3 class="member-name">Meg Liwag</h3>
+                        <p class="member-role">Accounting & Philosophy Major</p>
+                        <p class="member-bio">Our financial strategist with a philosophical perspective. Combines analytical precision with ethical decision-making frameworks.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member animated">
+                    <div class="member-img" style="background-image: url('/api/placeholder/300/300')"></div>
+                    <div class="member-info">
+                        <h3 class="member-name">Isaac James</h3>
+                        <p class="member-role">Studio Art Major</p>
+                        <p class="member-bio">Our creative visionary. Brings a unique artistic perspective to branding, design, and innovative product development.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member animated">
+                    <div class="member-img" style="background-image: url('/api/placeholder/300/300')"></div>
+                    <div class="member-info">
+                        <h3 class="member-name">Wesley Mazzucco</h3>
+                        <p class="member-role">Math & Physics Major</p>
+                        <p class="member-bio">Our analytical powerhouse. Excels at data analysis, problem-solving, and developing technical solutions to complex challenges.</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="mission" class="section mission">
+        <div class="container">
+            <div class="mission-content">
+                <div class="mission-text animated">
+                    <h2>Our Vision & Mindset</h2>
+                    <p>At The Franclub, we believe in the power of diverse perspectives and niche interests to drive innovation. As Washington and Lee sophomores, we combine our unique academic backgrounds to create solutions that others might overlook.</p>
+                    <p>Our collective mindset to succeed drives everything we do. We recognize that the intersection of political science, accounting, philosophy, studio art, mathematics, and physics creates a unique vantage point from which to approach challenges.</p>
+                    <p>We're committed to developing ideas that are not only successful but also meaningful and impactful in today's rapidly changing world.</p>
+                </div>
+                <div class="mission-img animated" style="background-image: url('/api/placeholder/600/400')"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section stats">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Collective Mindset</h2>
+                <p>What drives us forward together</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item animated">
+                    <div class="stat-number">4</div>
+                    <div class="stat-title">Diverse Majors</div>
+                </div>
+                <div class="stat-item animated">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-title">Drive to Succeed</div>
+                </div>
+                <div class="stat-item animated">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-title">Niche Interests</div>
+                </div>
+                <div class="stat-item animated">
+                    <div class="stat-number">1</div>
+                    <div class="stat-title">Collective Vision</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section contact">
+        <div class="container">
+            <div class="section-title">
+                <h2 style="color: white;">Get In Touch</h2>
+                <p style="color: #ccc;">Have a question or interested in working with us? Reach out!</p>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-info animated">
+                    <h2>Contact Information</h2>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <p>Washington and Lee University<br>Lexington, VA 24450</p>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <p>team@thefranclub.wlu.edu</p>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <p>(540) 555-1212</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="contact-form animated">
+                    <form>
+                        <input type="text" placeholder="Your Name" required>
+                        <input type="email" placeholder="Your Email" required>
+                        <input type="text" placeholder="Subject">
+                        <textarea placeholder="Your Message" required></textarea>
+                        <button type="submit" class="btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 The Franclub | Washington and Lee University</p>
+            <ul class="footer-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#mission">Mission</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <p>Designed with passion by The Franclub Team</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple scroll animation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Add animation class on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.team-member, .mission-text, .mission-img, .stat-item, .contact-info, .contact-form').forEach(el => {
+            el.classList.remove('animated');
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
